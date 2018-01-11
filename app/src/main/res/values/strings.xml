@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">TestInterview</string>
+    <string name="next">下一步</string>
+
+    <string name="buy_date">BuyDate</string>
+    <string name="no">No</string>
+    <string name="total">TotalQuantity</string>
+    <string name="quantity">Quantity</string>
+    <string name="currency_name">CurrencyName</string>
+    <string name="country">Country</string>
+    <string name="currency">Currency</string>
+    <string name="bank_name">BankName</string>
+    <string name="bank_branch">BankBranch</string>
+    <string name="bank_address">BankAddress</string>
+    <string name="account_name">AccountName</string>
+    <string name="account_no">AccountNo</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>
