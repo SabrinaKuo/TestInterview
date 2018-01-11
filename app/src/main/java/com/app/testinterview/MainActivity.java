@@ -27,6 +27,9 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     public void shouldDisplayHomeUp() {
         boolean canBack = getSupportFragmentManager().getBackStackEntryCount() > 0;
         getSupportActionBar().setDisplayHomeAsUpEnabled(canBack);
+        if (!canBack){
+            getSupportActionBar().setTitle(R.string.app_name);
+        }
     }
 
     @Override

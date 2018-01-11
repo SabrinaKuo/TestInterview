@@ -1,10 +1,14 @@
 package com.app.testinterview.object;
 
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
 /**
  * Created by kuosabrina on 2018/1/10.
  */
 
-public class CoinDetail {
+public class CoinDetail implements Serializable{
 
     /**
      * BuyDate : 2016-12-08T18:16:04.563Z

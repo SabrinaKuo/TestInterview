@@ -3,12 +3,17 @@ package com.app.testinterview.detail;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +39,7 @@ public class DetailFragment extends Fragment {
     private ArrayList<String> content = new ArrayList<>();
     private RecyclerView recyclerView;
     private DetailAdapter adapter;
+    private ArrayMap<String, String> detailInfo;
 
 
     public static DetailFragment newInstance() {
@@ -47,57 +53,11 @@ public class DetailFragment extends Fragment {
         // Required empty public constructor
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        String json = "{\n" +
-                "  \"BuyDate\": \"2016-12-08T18:16:04.563Z\",\n" +
-                "  \"No\": 10018,\n" +
-                "  \"TotalQuantity\": 2012,\n" +
-                "  \"Quantity\": 300,\n" +
-                "  \"CurrencyName\": \"USD\",\n" +
-                "  \"Country\": \"中國\",\n" +
-                "  \"Currency\": \"人民幣\",\n" +
-                "  \"BankName\": \"中國人民銀行\",\n" +
-                "  \"BankBranch\": \"上海分行\",\n" +
-                "  \"BankAddress\": \"上海市虹橋區虹橋路18號\",\n" +
-                "  \"AccountName\": \"李大寶\",\n" +
-                "  \"AccountNo\": \"1234123412341234\"\n" +
-                "}";
-        Gson gson = new Gson();
-        CoinDetail coinDetail = gson.fromJson(json, CoinDetail.class);
-        label.add("BuyDate");
-        label.add("No");
-        label.add("TotalQuantity");
-        label.add("Quantity");
-        label.add("CurrencyName");
-        label.add("Country");
-        label.add("Currency");
-        label.add("BankName");
-        label.add("BankBranch");
-        label.add("BankAddress");
-        label.add("AccountName");
-        label.add("AccountNo");
-
-        content.add(coinDetail.getBuyDate());
-        content.add(String.valueOf(coinDetail.getNo()));
-        content.add(String.valueOf(coinDetail.getTotalQuantity()));
-        content.add(String.valueOf(coinDetail.getQuantity()));
-        content.add(coinDetail.getCurrencyName());
-        content.add(coinDetail.getCountry());
-        content.add(coinDetail.getCurrency());
-        content.add(coinDetail.getBankName());
-        content.add(coinDetail.getBankBranch());
-        content.add(coinDetail.getBankAddress());
-        content.add(coinDetail.getAccountName());
-        content.add(coinDetail.getAccountNo());
-
-    }
-
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        initialData();
         return inflater.inflate(R.layout.fragment_detail, container, false);
     }
 
@@ -115,11 +75,37 @@ public class DetailFragment extends Fragment {
         });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new DetailAdapter(label, content);
+        adapter = new DetailAdapter(detailInfo);
         recyclerView.setAdapter(adapter);
     }
 
-    public void showAlerDialog(){
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void initialData(){
+        Bundle bundle = getArguments();
+        String title = bundle.getString("TITLE");
+        setItemTitle(title);
+
+        CoinDetail coinDetail = (CoinDetail) bundle.getSerializable("DETAIL");
+        detailInfo = new ArrayMap<>();
+        detailInfo.put("BuyDate", coinDetail.getBuyDate());
+        detailInfo.put("No", String.valueOf(coinDetail.getNo()));
+        detailInfo.put("TotalQuantity", String.valueOf(coinDetail.getTotalQuantity()));
+        detailInfo.put("Quantity", String.valueOf(coinDetail.getQuantity()));
+        detailInfo.put("CurrencyName", coinDetail.getCurrencyName());
+        detailInfo.put("Country", coinDetail.getCountry());
+        detailInfo.put("Currency", coinDetail.getCurrency());
+        detailInfo.put("BankName", coinDetail.getBankName());
+        detailInfo.put("BankBranch", coinDetail.getBankBranch());
+        detailInfo.put("BankAddress", coinDetail.getBankAddress());
+        detailInfo.put("AccountName", coinDetail.getAccountName());
+        detailInfo.put("AccountNo", coinDetail.getAccountNo());
+    }
+
+    private void setItemTitle(String title){
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(title);
+    }
+
+    private void showAlerDialog(){
         final View item = LayoutInflater.from(getActivity()).inflate(R.layout.item_layout, null);
         new AlertDialog.Builder(getContext())
                 .setTitle("請輸入二級密碼")
@@ -130,10 +116,10 @@ public class DetailFragment extends Fragment {
                         EditText editText = (EditText) item.findViewById(R.id.edit_text);
                         String name = editText.getText().toString();
 
-                        ResultFragment resultFragment = new ResultFragment();
+                        ResultFragment resultFragment = ResultFragment.newInstance();
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         fragmentManager.beginTransaction()
-                                .replace(R.id.panel, resultFragment)
+                                .replace(R.id.contentPanel, resultFragment, ResultFragment.class.getSimpleName())
                                 .commit();
                     }
                 })

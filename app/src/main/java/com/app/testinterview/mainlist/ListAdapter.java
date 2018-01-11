@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.app.testinterview.object.Coin;
 import com.app.testinterview.R;
+import com.app.testinterview.object.CoinDetail;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -23,11 +25,32 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>{
     private ClickCallback mCallback;
     private int oldselected = -1;
     private RecyclerView mRv;
+    private CoinDetail detail;
 
     public ListAdapter(ArrayList<Coin.BonusArrayBean> list, RecyclerView rv, ClickCallback callback) {
         this.mList = list;
         this.mCallback = callback;
         this.mRv = rv;
+        initalDetailData();
+    }
+
+    private void initalDetailData(){
+        String json = "{\n" +
+                "  \"BuyDate\": \"2016-12-08T18:16:04.563Z\",\n" +
+                "  \"No\": 10018,\n" +
+                "  \"TotalQuantity\": 2012,\n" +
+                "  \"Quantity\": 300,\n" +
+                "  \"CurrencyName\": \"USD\",\n" +
+                "  \"Country\": \"中國\",\n" +
+                "  \"Currency\": \"人民幣\",\n" +
+                "  \"BankName\": \"中國人民銀行\",\n" +
+                "  \"BankBranch\": \"上海分行\",\n" +
+                "  \"BankAddress\": \"上海市虹橋區虹橋路18號\",\n" +
+                "  \"AccountName\": \"李大寶\",\n" +
+                "  \"AccountNo\": \"1234123412341234\"\n" +
+                "}";
+        Gson gson = new Gson();
+        detail = gson.fromJson(json, CoinDetail.class);
     }
 
     @Override
@@ -50,7 +73,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>{
                 }
                 oldselected = position;
                 holder.radioButton.setChecked(true);
-                mCallback.onItemClick(mList.get(position));
+                mCallback.onItemClick(mList.get(position), detail);
             }
         });
 
@@ -76,6 +99,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>{
     }
 
     public interface ClickCallback {
-        void onItemClick(Coin.BonusArrayBean coinBean);
+        void onItemClick(Coin.BonusArrayBean coinBean, CoinDetail coinDetail);
     }
 }

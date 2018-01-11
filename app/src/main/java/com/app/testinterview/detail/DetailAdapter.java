@@ -1,6 +1,9 @@
 package com.app.testinterview.detail;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
+import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +19,10 @@ import java.util.ArrayList;
 
 public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder>{
 
-    private ArrayList<String> mLabel;
-    private ArrayList<String> mContent;
+    private ArrayMap<String, String> mDetailData;
 
-    public DetailAdapter(ArrayList<String> label, ArrayList<String> content) {
-        this.mLabel = label;
-        this.mContent = content;
+    public DetailAdapter(ArrayMap<String, String> detailmap) {
+        this.mDetailData = detailmap;
     }
 
 
@@ -30,15 +31,16 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.detail_item, parent, false));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.tv_label.setText(mLabel.get(position));
-        holder.tv_content.setText(mContent.get(position));
+        holder.tv_label.setText(mDetailData.keyAt(position));
+        holder.tv_content.setText(mDetailData.valueAt(position));
     }
 
     @Override
     public int getItemCount() {
-        return mLabel.size();
+        return mDetailData.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

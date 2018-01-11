@@ -3,6 +3,7 @@ package com.app.testinterview.mainlist;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import com.app.testinterview.object.Coin;
 import com.app.testinterview.detail.DetailFragment;
 import com.app.testinterview.R;
+import com.app.testinterview.object.CoinDetail;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ public class ListFragment extends Fragment {
     private ListAdapter adapter;
     private Button nextButton;
     private String selectTitle;
+    private Bundle bundle;
 
 
     public static ListFragment newInstance() {
@@ -122,12 +125,13 @@ public class ListFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                nextButton.setVisibility(View.GONE);
                 DetailFragment detailFragment = DetailFragment.newInstance();
+
+                detailFragment.setArguments(bundle);
 
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                 transaction.addToBackStack(null);
-                transaction.replace(R.id.panel, detailFragment, DetailFragment.class.getSimpleName());
+                transaction.replace(R.id.contentPanel, detailFragment, DetailFragment.class.getSimpleName());
                 transaction.commit();
             }
         });
@@ -136,10 +140,12 @@ public class ListFragment extends Fragment {
 
         adapter = new ListAdapter(list, recyclerView,  new ListAdapter.ClickCallback() {
             @Override
-            public void onItemClick(Coin.BonusArrayBean coinBean) {
+            public void onItemClick(Coin.BonusArrayBean coinBean, CoinDetail coinDetail) {
                 Log.i("Sabrina", "ListFragment- Title : " + coinBean.getTitle());
                 selectTitle = coinBean.getTitle();
-                nextButton.setVisibility(View.VISIBLE);
+                bundle = new Bundle();
+                bundle.putString("TITLE", selectTitle);
+                bundle.putSerializable("DETAIL", coinDetail);
             }
         });
         recyclerView.setAdapter(adapter);
